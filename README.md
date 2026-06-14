@@ -22,12 +22,30 @@
 
 ## 🚀 快速开始
 
-### 前置要求
+### 🤖 AI 快速安装（推荐）
+
+**适用于 Claude Code：**
+```
+将本项目安装到 Claude Code，配置屏幕氛围灯通知系统
+```
+
+**适用于 Codex：**
+```
+将本项目安装到 Codex，配置屏幕氛围灯通知系统
+```
+
+只需将上述文本粘贴到 AI 助手中，AI 会自动完成所有安装和配置！
+
+---
+
+### 📦 手动安装
+
+#### 前置要求
 
 - Python 3.7+
 - PyQt5
 
-### 安装步骤
+#### 安装步骤
 
 1. **安装依赖**：
    ```bash
@@ -128,6 +146,20 @@ display:
 2. **仅氛围灯**：设置 `enable_sound: false` 和 `enable_flash: false`
 3. **经典模式**：设置 `enable_overlay: false`（仅声音/闪烁）
 
+### Hooks 事件对比
+
+| 事件 | Claude Code Hook | Codex Hook | 颜色 | 说明 |
+|------|-----------------|-----------|------|------|
+| AI 完成响应 | `stop` | `Stop` | 🔴 红色 | AI 停止生成 |
+| 等待用户输入 | `notification` | - | 🟡 黄色 | AI 等待下一条消息 |
+| 等待权限确认 | - | `PermissionRequest` | 🟡 黄色 | 请求工具执行权限 |
+| 任务完成 | `task_complete` | - | 🟢 绿色 | 复杂任务完成 |
+
+**说明**：
+- Claude Code 使用 `settings.json` 配置 hooks
+- Codex 使用 `hooks.json` 配置 hooks，语法略有不同
+- 两者事件触发时机不同，但视觉效果一致
+
 ### 推荐设置
 
 - **低调通知**：`width: 30`, `animation: breathe`, `duration: 3`
@@ -158,17 +190,66 @@ python ambient-light-qt.py \
 
 ## 🔧 集成到其他工具
 
-### Codex / Windsurf
+### Codex
 
-1. 将文件复制到 `~/.codex/` 或 `~/.windsurf/`
-2. 更新 `notify.ps1` 或 `notify.sh` 中的路径：
-   ```powershell
-   # 从
-   $configPath = "$env:USERPROFILE/.claude/ambient-light-config.yaml"
-   # 改为
-   $configPath = "$env:USERPROFILE/.codex/ambient-light-config.yaml"
+**AI 快速安装**（推荐）：
+```
+将本项目安装到 Codex，配置屏幕氛围灯通知系统
+```
+
+**手动安装**：
+
+1. 复制文件到 `~/.codex/`：
+   ```bash
+   cp ambient-light-qt.py ambient-light-config.yaml notify.ps1 ~/.codex/
    ```
-3. 配置 Codex 的 hooks（参考 Codex 文档）
+
+2. 更新 `~/.codex/notify.ps1` 中的路径：
+   ```powershell
+   # 修改第 4 行
+   $configPath = "$env:USERPROFILE/.codex/ambient-light-config.yaml"
+   
+   # 修改第 87 行
+   $ambientLightPath = "$env:USERPROFILE/.codex/ambient-light-qt.py"
+   ```
+
+3. 配置 Codex hooks，编辑 `~/.codex/hooks.json`：
+   ```json
+   {
+     "hooks": {
+       "Stop": [
+         {
+           "hooks": [
+             {
+               "type": "command",
+               "command": "powershell -NoProfile -File \"$env:USERPROFILE\\.codex\\notify.ps1\" -event stop",
+               "timeout": 10
+             }
+           ]
+         }
+       ],
+       "PermissionRequest": [
+         {
+           "hooks": [
+             {
+               "type": "command",
+               "command": "powershell -NoProfile -File \"$env:USERPROFILE\\.codex\\notify.ps1\" -event input",
+               "timeout": 10
+             }
+           ]
+         }
+       ]
+     }
+   }
+   ```
+
+**Codex hooks 说明**：
+- `Stop`：AI 完成响应 → 🔴 红色氛围灯
+- `PermissionRequest`：等待工具权限确认 → 🟡 黄色氛围灯
+
+### Windsurf
+
+与 Codex 配置相同，将所有 `.codex` 路径替换为 `.windsurf`。
 
 ### 自定义自动化
 
@@ -255,10 +336,17 @@ MIT License - 可自由使用、修改和分发。
 
 ## 🙏 致谢
 
-为 AI 编程助手社区打造。已测试：
-- ✅ Claude Code（Anthropic）
-- ✅ Codex（OpenAI）
-- ✅ Windsurf
+为 AI 编程助手社区打造。已测试并完美运行：
+- ✅ **Claude Code**（Anthropic）- Windows 11，完整测试通过
+- ✅ **Codex**（OpenAI）- Windows 11，hooks 配置验证通过
+- 🔄 **Windsurf** - 理论支持（与 Codex 配置相同）
+
+**开发环境**：
+- Python 3.11 + PyQt5
+- Windows 11 Pro (10.0.22631)
+- 测试时间：2026-06-14
+
+感谢所有贡献者和使用者的反馈！
 
 ## 📧 支持
 
