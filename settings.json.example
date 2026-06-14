@@ -1,0 +1,7 @@
+{
+  "hooks": {
+    "stop": "powershell -NoProfile -File \"$env:USERPROFILE/.claude/notify.ps1\" -event stop",
+    "notification": "powershell -NoProfile -File \"$env:USERPROFILE/.claude/notify.ps1\" -event input",
+    "task_complete": "powershell -NoProfile -File \"$env:USERPROFILE/.claude/notify.ps1\" -event task_complete"
+  }
+}

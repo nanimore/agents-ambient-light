@@ -1,0 +1,40 @@
+# Claude Code 氛围灯配置文件
+
+# 全局开关
+enable_overlay: true    # 启用屏幕氛围灯
+enable_sound: true      # 启用声音通知
+enable_flash: true      # 启用任务栏闪烁
+
+# 事件颜色映射
+events:
+  stop:
+    color: red
+    # Claude 完成响应时
+  input:
+    color: yellow
+    # 权限提示或等待用户输入时
+  task_complete:
+    color: green
+    # 任务标记完成时
+  subagent_stop:
+    color: blue
+    # 子代理完成时（默认禁用，可在 notify.ps1 中启用）
+
+# 显示参数
+display:
+  style: border           # border=四周边框, band=顶部+底部色带
+  animation: breathe      # breathe=呼吸灯, flash=闪烁, static=静态
+  duration: 5             # 持续时间（秒），0=持续显示直到按 Esc
+  width: 60               # 边框宽度（像素），建议 20-50
+  alpha: 0.7              # 透明度（0.0-1.0），仅用于 static 模式
+
+# 使用说明：
+# 1. enable_overlay=true + enable_sound=true + enable_flash=true: 氛围灯+声音+闪烁（全开）
+# 2. enable_overlay=true + enable_sound=false + enable_flash=false: 仅氛围灯
+# 3. enable_overlay=false + enable_sound=true + enable_flash=true: 仅声音+闪烁（原有方案）
+#
+# 宽度建议：
+# - 10-15: 细线效果（较隐蔽）
+# - 20-30: 适中边框（推荐）
+# - 40-60: 粗边框（明显）
+# - 80+: 宽色带（极明显）
